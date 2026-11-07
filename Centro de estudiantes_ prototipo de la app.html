@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Centro de estudiantes: prototipo</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap">
+<style>
+:root{--bg:#f1f4fa;--sf:#fff;--ink:#101828;--mu:#5b6678;--ac:#2447f5;--acx:#fff;--hl:#ffd83d;--hlx:#3a2f00;--ln:#dde3ee;--ok:#12805c;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1220;--sf:#161d30;--ink:#eef2fb;--mu:#9aa6bd;--ac:#6f8bff;--acx:#0d1220;--ln:#27304a;--ok:#4cd2a0;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0d1220;--sf:#161d30;--ink:#eef2fb;--mu:#9aa6bd;--ac:#6f8bff;--acx:#0d1220;--ln:#27304a;--ok:#4cd2a0;color-scheme:dark}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:16px/1.45 "Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif}
+.app{height:100%;max-width:440px;margin:0 auto;display:flex;flex-direction:column;background:var(--bg);border-inline:1px solid var(--ln)}
+header{padding:14px 18px 8px}
+h1{margin:0;font-size:26px;font-weight:800;letter-spacing:-.02em}
+header p{margin:2px 0 0;color:var(--mu);font-size:14px}
+main{flex:1;overflow-y:auto;padding:6px 18px 18px}
+section{display:none}section.on{display:block}
+nav{display:flex;border-top:1px solid var(--ln);background:var(--sf)}
+nav button{flex:1;border:0;background:none;color:var(--mu);padding:10px 2px 9px;font:inherit;font-size:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px}
+nav button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+nav button[aria-selected=true]{color:var(--ac);font-weight:600}
+:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+input,select,textarea{width:100%;font:inherit;color:var(--ink);background:var(--sf);border:1px solid var(--ln);border-radius:10px;padding:10px 12px}
+textarea{resize:vertical;min-height:84px}
+label{display:block;font-size:14px;font-weight:600;margin:12px 0 5px}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:10px 0 4px}
+.chip{flex:none;border:1px solid var(--ln);background:var(--sf);color:var(--ink);border-radius:99px;padding:6px 13px;font:inherit;font-size:14px;cursor:pointer}
+.chip[aria-pressed=true]{background:var(--ac);color:var(--acx);border-color:var(--ac)}
+.card{background:var(--sf);border:1px solid var(--ln);border-radius:14px;padding:13px 14px;margin-top:10px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.card h3{margin:0;font-size:16px;font-weight:600}
+.meta{color:var(--mu);font-size:13px;margin-top:2px}
+.btn{border:0;border-radius:10px;background:var(--ac);color:var(--acx);font:inherit;font-weight:600;padding:10px 16px;cursor:pointer}
+.btn.sm{padding:6px 12px;font-size:14px}
+.btn.ghost{background:none;color:var(--ac);border:1px solid var(--ln)}
+.btn.full{width:100%;margin-top:16px}
+.tag{display:inline-block;background:var(--hl);color:var(--hlx);border-radius:6px;padding:1px 8px;font-size:12px;font-weight:600}
+.tg{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--ln)}
+.tg input{width:auto;accent-color:var(--ac);transform:scale(1.25)}
+.step{display:flex;align-items:center;gap:6px}
+.step output{min-width:28px;text-align:center;font-weight:600}
+.price{font-size:30px;font-weight:800;letter-spacing:-.02em}
+.sheet{background:var(--sf);border:1px solid var(--ln);border-radius:4px 22px 4px 4px;padding:16px;margin-top:14px}
+.bar{height:8px;border-radius:9px;background:var(--ln);overflow:hidden;margin:12px 0 8px}
+.bar i{display:block;height:100%;width:0;background:var(--ac);transition:width .6s}
+.stl{display:flex;justify-content:space-between;font-size:13px;color:var(--mu)}
+.stl b{color:var(--ink)}
+.st{font-size:12px;font-weight:600;border-radius:6px;padding:2px 8px;background:var(--ln);color:var(--ink)}
+.st.ok{background:var(--ok);color:var(--acx)}
+.chat{display:flex;flex-direction:column;gap:8px;padding-top:10px}
+.msg{max-width:88%;padding:10px 13px;border-radius:16px;white-space:pre-wrap}
+.msg.me{align-self:flex-end;background:var(--ac);color:var(--acx);border-bottom-right-radius:4px}
+.msg.ai{align-self:flex-start;background:var(--sf);border:1px solid var(--ln);border-bottom-left-radius:4px}
+.send{display:flex;gap:8px;margin-top:12px}
+.note{color:var(--mu);font-size:13px;margin-top:14px}
+.vote{min-width:54px;text-align:center}
+</style>
+</head>
+<body>
+<div class="app">
+<header><h1 id="ttl">Apuntes</h1><p id="sub">Todas las carreras, en un solo lugar</p></header>
+<main>
+<section id="s0" class="on">
+<input id="q" type="search" placeholder="Buscar por materia, tema o autor" aria-label="Buscar apuntes">
+<div class="chips" id="cf"></div>
+<div id="nl"></div>
+</section>
+
+<section id="s1">
+<div class="card"><div class="row"><div><h3 id="fn">Ningún archivo elegido</h3><div class="meta" id="fm">PDF, hasta 50 MB</div></div><button class="btn sm" id="pick">Elegir PDF</button></div></div>
+<div class="card">
+<div class="tg"><span>Copias</span><div class="step"><button class="btn ghost sm" data-c="-1" aria-label="Menos copias">−</button><output id="cp">1</output><button class="btn ghost sm" data-c="1" aria-label="Más copias">+</button></div></div>
+<label class="tg"><span>Doble faz</span><input type="checkbox" id="dx" checked></label>
+<label class="tg"><span>Color</span><input type="checkbox" id="co"></label>
+<label class="tg"><span>Anillado</span><input type="checkbox" id="an"></label>
+<label for="sd">Retiro en</label>
+<select id="sd"><option>Fotocopiadora, planta baja</option><option>Fotocopiadora, edificio nuevo</option><option>Kiosco del centro de estudiantes</option></select>
+</div>
+<div class="card row"><div><div class="meta">Total estimado</div><div class="price" id="pr">$0</div></div><span class="meta" id="pg"></span></div>
+<button class="btn full" id="ord">Enviar pedido</button>
+<div id="trk"></div>
+</section>
+
+<section id="s2">
+<div class="card">
+<label for="rc" style="margin-top:0">Categoría</label>
+<select id="rc"><option>Infraestructura</option><option>Administrativo</option><option>Cátedra</option><option>Becas y beneficios</option><option>Comedor y buffet</option><option>Otro</option></select>
+<label for="rt">¿Qué pasó?</label>
+<textarea id="rt" placeholder="Contá el problema, dónde ocurre y desde cuándo"></textarea>
+<button class="btn full" id="rs">Enviar reclamo</button>
+</div>
+<div id="rl"></div>
+</section>
+
+<section id="s3">
+<div class="card"><label for="pt" style="margin-top:0">Nueva propuesta</label>
+<div class="send"><input id="pt" placeholder="Una idea para mejorar la facultad"><button class="btn" id="pa">Publicar</button></div></div>
+<div id="pl"></div>
+</section>
+
+<section id="s4">
+<div class="chips" id="ac"></div>
+<div class="chat" id="ch"></div>
+<div class="send"><input id="ai" placeholder="Preguntá por un trámite o un reclamo" aria-label="Mensaje"><button class="btn" id="as">Enviar</button></div>
+<p class="note">Prototipo: las respuestas son de ejemplo. En la app real las genera Claude con la normativa de cada facultad.</p>
+</section>
+</main>
+<nav role="tablist" id="nv"></nav>
+</div>
+<script>
+const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const tabs=[["Apuntes","Todas las carreras, en un solo lugar","M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3zM5 17a3 3 0 0 1 3-3h11"],["Copias","Pedí tu impresión y retirala lista","M7 9V3h10v6M7 17H4v-7h16v7h-3M7 14h10v7H7z"],["Reclamos","Seguí cada reclamo hasta que se resuelva","M12 3 2 20h20zM12 10v4M12 17v.5"],["Propuestas","Las ideas más votadas llegan a la comisión","M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10c1 1 1 2 1 3h6c0-1 0-2 1-3a6 6 0 0 0-4-10"],["Asistente","Te guía en trámites y redacta por vos","M4 5h16v11H9l-5 4z"]];
+$("nv").innerHTML=tabs.map((t,i)=>`<button role="tab" aria-selected="${i==0}" data-t="${i}"><svg viewBox="0 0 24 24"><path d="${t[2]}"/></svg>${t[0]}</button>`).join("");
+$("nv").onclick=e=>{const b=e.target.closest("button");if(!b)return;const i=+b.dataset.t;document.querySelectorAll("nav button").forEach(x=>x.setAttribute("aria-selected",x==b));document.querySelectorAll("section").forEach((s,j)=>s.classList.toggle("on",j==i));$("ttl").textContent=tabs[i][0];$("sub").textContent=tabs[i][1]};
+
+const notes=[["Análisis de Señales: resumen de Fourier","Electrónica","2.º año","Lucía M.",4.8,312],["Control Lineal: guía de ejercicios resueltos","Electrónica","4.º año","Tomás R.",4.9,254],["Algoritmos y Estructuras de Datos: final","Sistemas","2.º año","Camila V.",4.6,401],["Bases de Datos: SQL con ejemplos","Sistemas","3.º año","Nicolás P.",4.5,188],["Estática y Resistencia: fórmulas clave","Civil","2.º año","Julián G.",4.7,167],["Química General: tabla y problemas","Química","1.er año","Sofía A.",4.4,276],["Termodinámica: resumen para el parcial","Mecánica","3.º año","Martín D.",4.6,143],["Análisis Matemático II: integrales dobles","Todas","2.º año","Valentina S.",4.9,520]];
+const carr=["Todas","Electrónica","Sistemas","Civil","Química","Mecánica"];let cf="Todas";const saved=new Set();
+$("cf").innerHTML=carr.map(c=>`<button class="chip" aria-pressed="${c==cf}">${c}</button>`).join("");
+$("cf").onclick=e=>{const b=e.target.closest(".chip");if(!b)return;cf=b.textContent;[...$("cf").children].forEach(x=>x.setAttribute("aria-pressed",x==b));rn()};
+function rn(){const q=$("q").value.toLowerCase().trim();const r=notes.map((n,i)=>[n,i]).filter(([n])=>(cf=="Todas"||n[1]==cf||n[1]=="Todas")&&(!q||n.join(" ").toLowerCase().includes(q)));
+$("nl").innerHTML=r.length?r.map(([n,i])=>`<div class="card row"><div><h3>${n[0]}</h3><div class="meta"><span class="tag">${n[1]}</span> ${n[2]}, de ${n[3]}</div><div class="meta">Valoración ${n[4]} · ${n[5]} descargas</div></div><button class="btn sm ${saved.has(i)?"ghost":""}" data-n="${i}">${saved.has(i)?"Guardado":"Guardar"}</button></div>`).join(""):'<p class="note">No hay apuntes con esa búsqueda. Probá con otra materia o subí el tuyo.</p>'}
+$("nl").onclick=e=>{const b=e.target.closest("button");if(!b)return;const i=+b.dataset.n;saved.has(i)?saved.delete(i):saved.add(i);rn()};$("q").oninput=rn;rn();
+
+let cp=1,pages=0;
+function pc(){const d=$("dx").checked,c=$("co").checked,a=$("an").checked;const t=pages*cp*(c?120:30)*(d?.85:1)+(a?1200*cp:0);$("pr").textContent="$"+Math.round(t).toLocaleString("es-AR");$("pg").textContent=pages?pages+" páginas × "+cp:""}
+$("pick").onclick=()=>{pages=24;$("fn").textContent="Guia_TP3_Control.pdf";$("fm").textContent="24 páginas · 1,8 MB";pc()};
+document.querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>{cp=Math.max(1,Math.min(99,cp+ +b.dataset.c));$("cp").textContent=cp;pc()});
+["dx","co","an"].forEach(i=>$(i).onchange=pc);pc();
+$("ord").onclick=()=>{if(!pages){$("trk").innerHTML='<p class="note">Elegí un PDF antes de enviar el pedido.</p>';return}
+const n=Math.floor(1000+Math.random()*9000),sd=$("sd").value;$("trk").innerHTML=`<div class="sheet"><div class="row"><h3 style="margin:0">Pedido n.º ${n}</h3><span class="st" id="st">Recibido</span></div><div class="meta">${esc(sd)}</div><div class="bar"><i id="bi"></i></div><div class="stl"><b id="s1l">Recibido</b><span>Imprimiendo</span><span>Listo para retirar</span></div></div>`;
+const w=[[80,"33%","Recibido"],[2600,"66%","Imprimiendo"],[5200,"100%","Listo para retirar"]];w.forEach(([t,p,s])=>setTimeout(()=>{$("bi").style.width=p;$("st").textContent=s;$("st").className="st"+(p=="100%"?" ok":"")},t))};
+
+const rcl=[["0412","Infraestructura","Pérdida de agua en el baño del 2.º piso","En trámite"],["0398","Cátedra","Falta publicar las notas del parcial","Resuelto"]];
+function rr(){$("rl").innerHTML=rcl.map(r=>`<div class="card row"><div><h3>${esc(r[2])}</h3><div class="meta">n.º ${r[0]} · ${r[1]}</div></div><span class="st ${r[3]=="Resuelto"?"ok":""}">${r[3]}</span></div>`).join("")}rr();
+$("rs").onclick=()=>{const t=$("rt").value.trim();if(!t){$("rt").focus();return}rcl.unshift([Math.floor(1000+Math.random()*9000).toString().padStart(4,"0"),$("rc").value,t.slice(0,70),"Recibido"]);$("rt").value="";rr()};
+
+const pr=[["Sumar un microondas en el hall central",86],["Ampliar el horario de la fotocopiadora a la noche",142],["Tutorías de ingreso dictadas por alumnos avanzados",119]];const vt=new Set();
+function rp(){$("pl").innerHTML=pr.map((p,i)=>`<div class="card row"><h3 style="font-weight:400">${esc(p[0])}</h3><button class="btn sm vote ${vt.has(i)?"":"ghost"}" data-p="${i}" aria-label="Votar">▲ ${p[1]+(vt.has(i)?1:0)}</button></div>`).join("")}rp();
+$("pl").onclick=e=>{const b=e.target.closest("button");if(!b)return;const i=+b.dataset.p;vt.has(i)?vt.delete(i):vt.add(i);rp()};
+$("pa").onclick=()=>{const t=$("pt").value.trim();if(!t)return;pr.unshift([t,0]);const s=new Set();vt.forEach(v=>s.add(v+1));vt.clear();s.forEach(v=>vt.add(v));$("pt").value="";rp()};
+
+const kb=[[/regular|certificado/,"Para el certificado de alumno regular:\n1. Entrá al autogestión con tu legajo.\n2. Elegí «Certificados» y después «Alumno regular».\n3. Descargalo en PDF; si lo piden con sello, retiralo en Alumnado.\n\nTe lo tienen listo en el día."],[/equivalencia/,"Para pedir equivalencias:\n1. Juntá el programa sellado de cada materia aprobada.\n2. Sumá el analítico parcial.\n3. Presentá la nota en Alumnado y pedí el número de expediente.\n\n¿Querés que te redacte la nota?"],[/reclamo|aula|baño|problema/,"Te dejo el reclamo listo para enviar:\n\n«Por la presente solicito la revisión del problema detallado, que afecta el uso normal de las instalaciones. Quedo a disposición para ampliar la información. Saludos cordiales.»\n\nCategoría sugerida: Infraestructura."]];
+const qs=["Certificado de alumno regular","Pedir equivalencias","Reclamo por un aula"];
+$("ac").innerHTML=qs.map(q=>`<button class="chip">${q}</button>`).join("");
+function ms(c,t){$("ch").insertAdjacentHTML("beforeend",`<div class="msg ${c}">${esc(t)}</div>`);$("ch").lastElementChild.scrollIntoView({block:"end"})}
+ms("ai","Hola, soy el asistente del centro. Contame qué trámite o reclamo necesitás y te digo los pasos.");
+function ask(t){if(!t.trim())return;ms("me",t);const k=kb.find(k=>k[0].test(t.toLowerCase()));setTimeout(()=>ms("ai",k?k[1]:"Todavía no tengo ese trámite en el prototipo. En la app real te respondo con la normativa de tu facultad y, si hace falta, te armo la nota."),500)}
+$("ac").onclick=e=>{const b=e.target.closest(".chip");if(b)ask(b.textContent)};
+$("as").onclick=()=>{ask($("ai").value);$("ai").value=""};$("ai").onkeydown=e=>{if(e.key=="Enter")$("as").click()};
+</script>
+</body>
+</html>

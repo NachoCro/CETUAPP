@@ -1,0 +1,13 @@
+{
+  "name": "cetu-supabase",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node tests/schema.test.mjs",
+    "seed:users": "node scripts/seed-users.mjs"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.2.17",
+    "@supabase/supabase-js": "^2.58.0"
+  }
+}
