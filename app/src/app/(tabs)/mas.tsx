@@ -1,14 +1,6 @@
 import { Body, Button, Card, Heading, NavRow, Screen } from '@/components/ui';
 import { useAuth } from '@/lib/auth';
-import { MEMBER_TYPE_LABEL } from '@/lib/types';
-
-const ROLE_NAMES = {
-  superadmin: 'Superadmin',
-  admin: 'Admin del CETU',
-  comision: 'Comisión directiva',
-  fotocopiadora: 'Fotocopiadora',
-  comunicacion: 'Comunicación',
-} as const;
+import { MEMBER_TYPE_LABEL, ROLE_LABEL } from '@/lib/types';
 
 export default function MasScreen() {
   const { profile, roles, isAdmin, hasRole, isVerified, signOut } = useAuth();
@@ -33,9 +25,10 @@ export default function MasScreen() {
         <Body muted>
           {profile ? MEMBER_TYPE_LABEL[profile.member_type] : ''}
           {profile?.verification_status === 'verificado' ? ' · verificada' : ' · sin verificar'}
-          {roles.length ? ` · ${roles.map((r) => ROLE_NAMES[r]).join(', ')}` : ''}
+          {roles.length ? ` · ${roles.map((r) => ROLE_LABEL[r]).join(', ')}` : ''}
         </Body>
       </Card>
+      <NavRow href="/perfil" title="Mi perfil" detail="Nombre, carreras y año" />
       {!isVerified ? <NavRow href="/verificacion" title="Estado de mi cuenta" /> : null}
       <Button title="Cerrar sesión" variant="ghost" onPress={signOut} />
     </Screen>

@@ -1,5 +1,6 @@
 import * as DocumentPicker from 'expo-document-picker';
 import * as ImagePicker from 'expo-image-picker';
+import * as WebBrowser from 'expo-web-browser';
 import { Platform } from 'react-native';
 
 import { supabase } from './supabase';
@@ -86,6 +87,12 @@ export async function signedUrl(bucket: Bucket, path: string, expiresInSeconds =
   const { data, error } = await supabase.storage.from(bucket).createSignedUrl(path, expiresInSeconds);
   if (error) throw error;
   return data.signedUrl;
+}
+
+/** Abre un archivo privado (PDF, foto) en el navegador / visor del sistema. */
+export async function openPrivateFile(bucket: Bucket, path: string): Promise<void> {
+  const url = await signedUrl(bucket, path);
+  await WebBrowser.openBrowserAsync(url);
 }
 
 /** URL pública (solo bucket "noticias"). */

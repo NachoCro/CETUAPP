@@ -12,7 +12,7 @@ Lo necesitan todos los módulos. Nada de esto se ve en la app, pero ahorra traba
 
 - [x] Repo git único en la raíz (borrar `app/.git`), `.gitignore`, ramas `main` + ramas por módulo.
 - [x] CI con GitHub Actions: `tsc`, `expo lint` y tests del esquema en cada PR (`.github/workflows/ci.yml`).
-- [ ] Proyecto de Supabase **de desarrollo**; aplicar `0001_schema.sql`; dominio institucional real. *(lo crea el equipo)*
+- [x] Proyecto de Supabase; `0001_schema.sql` aplicada; dominio `frsn.utn.edu.ar`; seed y usuarios de prueba cargados.
 - [ ] Generar tipos: `supabase gen types` → `app/src/lib/database.types.ts` y tipar el cliente. *(requiere el proyecto)*
 - [x] Datos semilla: `supabase/seed.sql` (catálogo de ejemplo, horarios, un trámite) y
       `supabase/scripts/seed-users.mjs` (un usuario de prueba por rol).
@@ -28,15 +28,17 @@ Lo necesitan todos los módulos. Nada de esto se ve en la app, pero ahorra traba
 ## Fase 1 — Cuentas y administración base (M)
 Sin esto nadie puede hacer nada más que mirar.
 
-- [ ] Panel admin: **lista de usuarios** con filtros (alumno/docente/no docente declarado, mail institucional,
+- [x] Panel admin: **lista de usuarios** con filtros (alumno/docente/no docente declarado, mail institucional,
       estado) y acciones en lote con `classify_users` (ej. "verificar a todos los pendientes con mail
       institucional que declaran ser alumnos").
-- [ ] Verificación con certificado: subir certificado → `verification_requests`; ver estado y motivo de rechazo.
-- [ ] Panel admin: cola de verificaciones con vista del documento, aprobar/rechazar (`review_verification`).
-- [ ] Perfil: carrera(s) y año (`profile_careers`).
-- [ ] Superadmin: buscar usuarios y asignar/quitar roles.
-- [ ] Admin: ABM de carreras, materias y profesores.
-- [ ] Admin: configuración (`app_settings`): umbral de votos, vigencia, dominio, límite del asistente.
+- [x] Verificación con certificado: subir certificado → `verification_requests`; ver estado y motivo de rechazo.
+- [x] Panel admin: cola de verificaciones con vista del documento, aprobar/rechazar (`review_verification`).
+- [x] Perfil: carrera(s) y año (`profile_careers`).
+- [x] Superadmin: buscar usuarios y asignar/quitar roles.
+- [x] Admin: ABM de carreras, materias y profesores.
+- [x] Admin: configuración (`app_settings`): umbral de votos, vigencia, dominio, límite del asistente.
+
+*Hecho: pantallas en `app/src/app/admin/`, `perfil.tsx`, `verificacion.tsx`; migración `0002_verificacion_admin.sql`.*
 
 **Listo cuando:** un alumno con mail institucional se verifica desde la lista en lote; un docente queda
 clasificado como docente sin funciones de estudiante; un alumno con Gmail sube su certificado y lo aprueban.

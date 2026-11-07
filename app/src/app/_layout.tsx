@@ -52,9 +52,10 @@ function RootNavigator() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="verificacion" options={{ title: 'Verificar cuenta' }} />
         <Stack.Screen name="notificaciones" options={{ title: 'Notificaciones' }} />
+        <Stack.Screen name="perfil" options={{ title: 'Mi perfil' }} />
 
         <Stack.Protected guard={isAdmin}>
-          <Stack.Screen name="admin" options={{ title: 'Panel del CETU' }} />
+          <Stack.Screen name="admin" options={{ headerShown: false }} />
         </Stack.Protected>
         <Stack.Protected guard={hasRole('comunicacion')}>
           <Stack.Screen name="comunicacion" options={{ title: 'Comunicación' }} />

@@ -91,12 +91,46 @@ ok('docente recibe notificación', (await q(`select * from notifications`)).leng
 await as(U.gmail);
 ok('alumno no puede autoverificarse', await fails(`update profiles set verification_status='verificado' where id='${U.gmail}'`));
 await db.exec(`insert into verification_requests (user_id, document_path) values ('${U.gmail}', '${U.gmail}/cert.pdf')`);
+ok('solo una solicitud pendiente por usuario', await fails(`insert into verification_requests (user_id, document_path) values ('${U.gmail}', '${U.gmail}/otro.pdf')`));
 ok('pendiente no puede votar ni reclamar', await fails(`select create_claim(1, 'Prueba pendiente', 'x')`));
 await as(U.admin);
 const [req] = await q(`select id from verification_requests`);
 await q(`select review_verification($1, true)`, [req.id]);
 await as(null);
 ok('admin aprueba documento → verificado', await st(U.gmail) === 'verificado');
+
+// --- classify_users: lote mixto y solicitudes colgadas ---
+const CERT = '77777777-7777-7777-7777-777777777777';
+await db.exec(`insert into auth.users (id, email, email_confirmed_at, raw_user_meta_data)
+               values ('${CERT}', 'caro@gmail.com', now(), '{"full_name":"Caro"}')`);
+await as(CERT);
+await db.exec(`insert into verification_requests (user_id, document_path) values ('${CERT}', '${CERT}/cert.pdf')`);
+await as(U.admin);
+await q(`select classify_users(array['${CERT}']::uuid[], 'alumno', 'verificado')`);
+await q(`select classify_users(array['${U.doc}']::uuid[], null, 'suspendido')`);
+await as(null);
+ok('verificar desde la lista cierra la solicitud pendiente',
+   (await q(`select status from verification_requests where user_id=$1`, [CERT]))[0].status === 'verificado');
+await as(U.admin);
+await q(`select classify_users(array['${U.doc}']::uuid[], 'docente', 'verificado')`);
+await as(U.doc);
+ok('docente verificado puede mandar certificado', !(await fails(`insert into verification_requests (user_id, document_path) values ('${U.doc}', '${U.doc}/c.pdf')`)));
+await as(U.admin);
+const [dreq] = await q(`select id from verification_requests where user_id=$1 and status='pendiente'`, [U.doc]);
+await q(`select review_verification($1, false, 'Ilegible')`, [dreq.id]);
+await as(null);
+ok('rechazar certificado no le quita la verificación', await st(U.doc) === 'verificado' && (await prof(U.doc)).member_type === 'docente');
+await as(U.doc);
+await db.exec(`insert into verification_requests (user_id, document_path) values ('${U.doc}', '${U.doc}/c2.pdf')`);
+await as(U.admin);
+const [dreq2] = await q(`select id from verification_requests where user_id=$1 and status='pendiente'`, [U.doc]);
+await q(`select review_verification($1, true)`, [dreq2.id]);
+await as(null);
+ok('aprobar certificado → pasa a alumno', (await prof(U.doc)).member_type === 'alumno');
+await as(U.admin);
+await q(`select classify_users(array['${U.doc}']::uuid[], 'docente', 'suspendido')`);
+await as(null);
+ok('suspender sin tipo conserva el tipo', (await prof(U.doc)).member_type === 'docente' && await st(U.doc) === 'suspendido');
 
 // --- reclamo anónimo ---
 await as(U.inst);

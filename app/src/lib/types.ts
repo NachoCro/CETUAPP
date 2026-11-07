@@ -37,3 +37,32 @@ export type Profile = {
   verification_method: 'revision_admin' | 'documento' | null;
   verified_at: string | null;
 };
+
+export const VERIFICATION_STATUS_LABEL: Record<VerificationStatus, string> = {
+  pendiente: 'Pendiente',
+  verificado: 'Verificado',
+  rechazado: 'Rechazado',
+  suspendido: 'Suspendido',
+};
+
+export const ROLE_LABEL: Record<AppRole, string> = {
+  superadmin: 'Superadmin',
+  admin: 'Admin del CETU',
+  comision: 'Comisión directiva',
+  fotocopiadora: 'Fotocopiadora',
+  comunicacion: 'Comunicación',
+};
+
+export type VerificationRequest = {
+  id: string;
+  user_id: string;
+  document_path: string;
+  status: VerificationStatus;
+  rejection_reason: string | null;
+  reviewed_at: string | null;
+  created_at: string;
+};
+
+export type Career = { id: number; name: string };
+export type Subject = { id: number; career_id: number; year: number; name: string };
+export type Professor = { id: number; full_name: string };

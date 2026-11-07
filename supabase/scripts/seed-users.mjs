@@ -13,6 +13,13 @@ if (!url || !serviceKey) {
   console.error('Faltan SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY');
   process.exit(1);
 }
+if (serviceKey.startsWith('sb_publishable_') || serviceKey === '...') {
+  console.error(
+    'Esa es la publishable key (o un texto de ejemplo). Hace falta la SECRET key (sb_secret_...) o la\n' +
+      'service_role legacy (eyJ...): Supabase → Project Settings → API Keys.',
+  );
+  process.exit(1);
+}
 
 const PASSWORD = 'cetu-prueba-123';
 const USERS = [
